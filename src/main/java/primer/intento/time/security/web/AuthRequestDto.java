@@ -1,4 +1,6 @@
-package primer.intento.time.passenger.security.web;
+package primer.intento.time.security.web;
 
-public class AuthRequestDto {
-}
+public record AuthRequestDto(
+        String username,
+        String password
+) {}

@@ -1,4 +1,7 @@
 package primer.intento.time.booking.application.port.in;
 
-public class CreateBookingUseCase {
+import primer.intento.time.booking.domain.model.Booking;
+
+public interface CreateBookingUseCase {
+    Booking createBooking(CreateBookingCommand command);
 }

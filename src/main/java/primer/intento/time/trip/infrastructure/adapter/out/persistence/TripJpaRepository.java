@@ -1,4 +1,5 @@
 package primer.intento.time.trip.infrastructure.adapter.out.persistence;
 
-public class TripJpaRepository {
-}
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TripJpaRepository extends JpaRepository<TripEntity, Long> {}

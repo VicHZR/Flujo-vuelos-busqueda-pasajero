@@ -1,4 +1,7 @@
 package primer.intento.time.passenger.application.port.in;
 
-public class CreatePassengerUseCase {
+import primer.intento.time.passenger.domain.model.Passenger;
+
+public interface CreatePassengerUseCase {
+    Passenger createPassenger(CreatePassengerCommand command);
 }

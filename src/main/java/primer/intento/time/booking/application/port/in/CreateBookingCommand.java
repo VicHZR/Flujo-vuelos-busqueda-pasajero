@@ -1,4 +1,6 @@
 package primer.intento.time.booking.application.port.in;
 
-public class CreateBookingCommand {
-}
+public record CreateBookingCommand(
+        Long passengerId,
+        Long tripId
+) {}
