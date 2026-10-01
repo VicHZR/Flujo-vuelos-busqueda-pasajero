@@ -3,33 +3,37 @@ package primer.intento.time.Customer.Infraestructure.Adapter.in;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class PassengerDto {
 
     private Long id;
 
-    @NotBlank
+    @NotBlank(message = "El primer nombre no puede estar vacio")
     private String firstname;
 
-    @NotBlank
+    @NotBlank (message = "El segundo nombre no puede estar vacio")
     private String secondname;
 
-    @NotBlank
+    @NotBlank (message = "El apellido no puede estar vacio")
     private String lastname;
 
-    @NotBlank
+    @NotBlank(message = "El tipo de documento no puede estar vacio")
     private String tipeId;
 
-    @NotNull
+    @NotNull(message = "La edad es obligatoria")
+    @Positive(message = "La edad tiene que ser mayor a 0")
     private Integer age;
 
-    @NotNull
+    @NotNull(message = "No puede estar vacio")
+    @Positive(message = "El numero del documento tiene que ser mayor a 0")
     private Integer numberId;
 
-    @NotBlank
+    @NotBlank(message = "El campo no debe estar vacio")
     private String airline;
 
-    @NotNull
+    @NotNull(message = "")
+    @Positive(message = "El numero del vuelo debe ser mayor a 0")
     private Integer flightNumber;
 
     @NotBlank

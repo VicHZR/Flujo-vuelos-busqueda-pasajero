@@ -14,43 +14,43 @@ public class PassengerEnitity {
     private Long id;
 
     @NotBlank
-    @Column(name="first_name")
+    @Column(name="first_name", nullable = false)
     private String firstname;
 
     @NotBlank
-    @Column(name = "second_name")
+    @Column(name = "second_name", nullable = false)
     private String secondname;
 
     @NotBlank
-    @Column(name="last_name")
+    @Column(name="last_name", nullable = false)
     private String lastname;
 
     @NotBlank
-    @Column(name="type_id")
+    @Column(name="type_id", nullable = false)
     private String typeId;
 
     @NotNull
-    @Column(name = "age")
+    @Column(name = "age", nullable = false)
     private Integer age;
 
     @NotNull
-    @Column(name ="numeber_id")
+    @Column(name ="numeber_id", nullable = false)
     private Integer numberId;
 
     @NotBlank
-    @Column(name = "airline")
+    @Column(name = "airline", nullable = false)
     private String airline;
 
     @NotNull
-    @Column(name = "flight_number")
+    @Column(name = "flight_number", nullable = false)
     private Integer flightNumber;
 
     @NotBlank
-    @Column (name = "email")
+    @Column (name = "email", nullable = false)
     private String email;
 
     @NotNull
-    @Column(name = "phone")
+    @Column(name = "phone",nullable = false)
     private Integer phone;
 
     public PassengerEnitity(){}
