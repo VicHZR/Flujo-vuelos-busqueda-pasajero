@@ -8,6 +8,7 @@ import primer.intento.time.trip.infrastructure.adapter.out.persistence.TripEntit
 import primer.intento.time.trip.infrastructure.adapter.out.persistence.TripJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -42,18 +43,36 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
         );
 
         BookingEntity saved = bookingJpaRepository.save(entity);
-        return new Booking(
-                saved.getId(),
-                saved.getPassenger().getId(),
-                saved.getTrip().getId(),
-                saved.getBookingDate(),
-                saved.getStatus()
-        );
+        return mapToDomain(saved);
     }
 
     @Override
     public Optional<Booking> findById(Long id) {
         return bookingJpaRepository.findById(id)
-                .map(e -> new Booking(e.getId(), e.getPassenger().getId(), e.getTrip().getId(), e.getBookingDate(), e.getStatus()));
+                .map(this::mapToDomain);
+    }
+
+    @Override
+    public List<Booking> findByPassengerEmail(String email) {
+        return bookingJpaRepository.findByPassengerEmail(email).stream()
+                .map(this::mapToDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Booking> findAllBookingsByPassengerId(Long passengerId) {
+        return bookingJpaRepository.findAllBookingsByPassengerId(passengerId).stream()
+                .map(this::mapToDomain)
+                .toList();
+    }
+
+    private Booking mapToDomain(BookingEntity entity) {
+        return new Booking(
+                entity.getId(),
+                entity.getPassenger().getId(),
+                entity.getTrip().getId(),
+                entity.getBookingDate(),
+                entity.getStatus()
+        );
     }
 }
