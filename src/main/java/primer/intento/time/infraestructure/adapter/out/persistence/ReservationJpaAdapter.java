@@ -95,6 +95,7 @@ public class ReservationJpaAdapter implements ReservationRepositoryPort {
         Passenger passenger = null;
         if (entity.getPassenger() != null) {
             passenger = new Passenger();
+            passenger.setId(entity.getPassenger().getId()); // ID agregado aquí
             passenger.setFirstName(entity.getPassenger().getFirstName());
             passenger.setLastName(entity.getPassenger().getLastName());
             passenger.setDocumentType(entity.getPassenger().getDocumentType());
@@ -105,13 +106,13 @@ public class ReservationJpaAdapter implements ReservationRepositoryPort {
         FlightTicket flight = null;
         if (entity.getFlightTicket() != null) {
             flight = new FlightTicket();
+            flight.setId(entity.getFlightTicket().getId()); // ID agregado aquí
             flight.setTicketNumber(entity.getFlightTicket().getTicketNumber());
             flight.setAirline(entity.getFlightTicket().getAirline());
             flight.setSeatNumber(entity.getFlightTicket().getSeatNumber());
             flight.setFlightNumber(entity.getFlightTicket().getFlightNumber());
             flight.setFlightTime(entity.getFlightTicket().getFlightTime());
         }
-
 
         return new LodgingReservation(entity.getId(), entity.getAccommodationType(), passenger, flight);
     }
