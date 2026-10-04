@@ -60,7 +60,7 @@ public class ReservationJpaAdapter implements ReservationRepositoryPort {
             flightEntity.setFlightNumber(reservation.getFlightTicket().getFlightNumber());
             flightEntity.setFlightTime(reservation.getFlightTicket().getFlightTime());
 
-            // Mantenemos la relación que tenías en tu código original
+            // Mantenemos la relación
             if (entity.getPassenger() != null) {
                 flightEntity.setPassenger(entity.getPassenger());
             }
