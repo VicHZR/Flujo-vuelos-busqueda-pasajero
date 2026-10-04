@@ -31,7 +31,7 @@ public class ReservationService implements ManageReservationUseCase {
 
     @Override
     public LodgingReservation updateReservation(Long id, LodgingReservation reservation) {
-        // En la vida real, primero verificamos que exista, pero aquí lo simplificamos guardándolo directamente
+
         return repositoryPort.save(reservation);
     }
 

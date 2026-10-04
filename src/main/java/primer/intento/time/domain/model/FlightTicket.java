@@ -21,6 +21,8 @@ public class FlightTicket {
         this.passenger = passenger;
     }
 
+    public FlightTicket(){}
+
     public Long getId() { return id; }
     public String getTicketNumber() { return ticketNumber; }
     public String getAirline() { return airline; }
@@ -28,4 +30,12 @@ public class FlightTicket {
     public String getFlightNumber() { return flightNumber; }
     public LocalDateTime getFlightTime() { return flightTime; }
     public Passenger getPassenger() { return passenger; }
+
+    public void setId(Long id) {this.id = id;}
+    public void setTicketNumber(String ticketNumber) {this.ticketNumber = ticketNumber;}
+    public void setAirline(String airline) {this.airline = airline;}
+    public void setSeatNumber(String seatNumber) {this.seatNumber = seatNumber;}
+    public void setFlightNumber(String flightNumber) {this.flightNumber = flightNumber;}
+    public void setFlightTime(LocalDateTime flightTime) {this.flightTime = flightTime;}
+    public void setPassenger(Passenger passenger) {this.passenger = passenger;}
 }

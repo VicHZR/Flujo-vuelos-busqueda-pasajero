@@ -21,16 +21,12 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        // TODO: Aquí buscarás el request.getUsername() en tu tabla de MySQL (UserEntity)
-        // y verificarás que las contraseñas coincidan.
 
         // Simulación temporal para probar Bruno:
         if ("admin".equals(request.getUsername()) && "123456".equals(request.getPassword())) {
 
-            // Simulamos que el usuario tiene el rol de administrador en tu base de datos
             List<String> roles = List.of("ROLE_ADMIN");
 
-            // ¡Aquí se utiliza tu método! La advertencia del IDE desaparecerá.
             String token = jwtProvider.generateToken(request.getUsername(), roles);
 
             return ResponseEntity.ok(new AuthResponse(token));

@@ -14,12 +14,12 @@ public class UserEntity {
     private String username;
 
     @Column(nullable = false)
-    private String password; // Aquí se guardará la contraseña encriptada
+    private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
-    private Set<String> roles; // Ejemplo: "ROLE_ADMIN", "ROLE_USER"
+    private Set<String> roles;
 
 
     public String getUsername() { return username; }

@@ -19,7 +19,7 @@ public class FlightTicketEntity {
     @JoinColumn(name = "passenger_id", nullable = false)
     private PassengerEntity passenger;
 
-    // Generar constructores vacíos, getters y setters en tu IDE...
+
     public FlightTicketEntity() {}
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

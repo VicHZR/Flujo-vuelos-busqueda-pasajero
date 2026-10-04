@@ -39,6 +39,7 @@ public class ReservationController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<LodgingReservation> patchReservation(@PathVariable Long id, @RequestBody LodgingReservation reservation) {
+        reservation.setId(id);
         return ResponseEntity.ok(useCase.updateReservation(id, reservation));
     }
 

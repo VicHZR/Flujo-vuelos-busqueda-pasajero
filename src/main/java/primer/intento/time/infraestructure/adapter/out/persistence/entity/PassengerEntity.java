@@ -14,7 +14,7 @@ public class PassengerEntity {
     private String documentNumber;
     private int age;
 
-    // Generar constructores vacíos, getters y setters en tu IDE
+
     public PassengerEntity() {}
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
