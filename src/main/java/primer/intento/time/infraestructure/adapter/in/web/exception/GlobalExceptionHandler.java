@@ -19,22 +19,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // 404 - Not Found (Ej. Buscar una reserva que no existe)
-    // Nota: Deberías crear una clase ResourceNotFoundException para lanzarla en tu servicio
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException ex) {
-        if (ex.getMessage() != null && ex.getMessage().contains("no encontrad")) {
-            ErrorResponse error = new ErrorResponse(
-                    HttpStatus.NOT_FOUND.value(),
-                    "Not Found",
-                    ex.getMessage()
-            );
-            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-        }
-        return handleAllExceptions(ex); // Si no es un 404, cae al 500
+    // 404 - Not Found (Manejo limpio con la excepción personalizada)
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // 409 - Conflict (Ej. Intentar registrar un vuelo que ya existe)
+    // 409 - Conflict (Ej. Intentar registrar un recurso que ya existe)
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErrorResponse> handleConflict(IllegalStateException ex) {
         ErrorResponse error = new ErrorResponse(
