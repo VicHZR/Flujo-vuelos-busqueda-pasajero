@@ -18,20 +18,20 @@ public class JwtProvider {
 
     public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
-                .subject(username)                 // Reemplaza a setSubject
+                .subject(username)
                 .claim("roles", roles)
-                .issuedAt(new Date())              // Reemplaza a setIssuedAt
-                .expiration(new Date(System.currentTimeMillis() + 3600000)) // Reemplaza a setExpiration
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 3600000))
                 .signWith(key)
                 .compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser()                          // Reemplaza a parserBuilder()
-                    .verifyWith(key)                   // Nueva forma de asignar la llave de verificación
+            Jwts.parser()
+                    .verifyWith(key)
                     .build()
-                    .parseSignedClaims(token);         // Reemplaza a parseClaimsJws
+                    .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -43,11 +43,11 @@ public class JwtProvider {
                 .verifyWith(key)
                 .build()
                 .parseSignedClaims(token)
-                .getPayload()                      // Nueva forma de obtener el cuerpo (body)
+                .getPayload()
                 .getSubject();
     }
 
-    @SuppressWarnings("unchecked")                 // Evita el warning "Unchecked assignment"
+    @SuppressWarnings("unchecked")
     public List<String> getRolesFromToken(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith(key)
