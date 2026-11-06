@@ -43,7 +43,7 @@ public class ReservationMapper {
         return LodgingReservation.builder()
                 .accommodationType(dto.getAccommodationType())
                 .hotelName(dto.getHotelName())
-                .roomType(dto.getRoomType()) // <-- Mapeo del roomType incluido
+                .roomType(dto.getRoomType())
                 .checkInDate(dto.getCheckInDate())
                 .checkOutDate(dto.getCheckOutDate())
                 .passenger(passenger)

@@ -79,7 +79,7 @@ public class ReservationRepositoryAdapter implements ReservationRepositoryPort {
         entity.setId(domain.getId());
         entity.setAccommodationType(domain.getAccommodationType());
         entity.setHotelName(domain.getHotelName());
-        entity.setRoomType(domain.getRoomType()); // <-- Mapeo vital al guardar en BD
+        entity.setRoomType(domain.getRoomType());
         entity.setCheckInDate(domain.getCheckInDate());
         entity.setCheckOutDate(domain.getCheckOutDate());
         entity.setPassenger(passengerEntity);
@@ -120,7 +120,7 @@ public class ReservationRepositoryAdapter implements ReservationRepositoryPort {
                 .id(entity.getId())
                 .accommodationType(entity.getAccommodationType())
                 .hotelName(entity.getHotelName())
-                .roomType(entity.getRoomType()) // <-- Recuperación hacia el dominio
+                .roomType(entity.getRoomType())
                 .checkInDate(entity.getCheckInDate())
                 .checkOutDate(entity.getCheckOutDate())
                 .passenger(passenger)
