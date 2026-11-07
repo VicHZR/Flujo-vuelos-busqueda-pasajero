@@ -12,7 +12,7 @@ import primer.intento.time.booking.infraestructure.web.dto.ReservationResponseDt
 @Component
 public class ReservationMapper {
 
-    public static LodgingReservation toDomain(ReservationRequestDto dto) {
+    public LodgingReservation toDomain(ReservationRequestDto dto) {
         if (dto == null) return null;
 
         Passenger passenger = null;
@@ -51,7 +51,7 @@ public class ReservationMapper {
                 .build();
     }
 
-    public static ReservationResponseDto toResponseDto(LodgingReservation domain) {
+    public ReservationResponseDto toResponseDto(LodgingReservation domain) {
         if (domain == null) return null;
 
         PassengerDto passengerDto = null;
@@ -77,6 +77,10 @@ public class ReservationMapper {
         return new ReservationResponseDto(
                 domain.getId(),
                 domain.getAccommodationType(),
+                domain.getHotelName(),
+                domain.getRoomType(),
+                domain.getCheckInDate(),
+                domain.getCheckOutDate(),
                 passengerDto,
                 flightTicketDto
         );
