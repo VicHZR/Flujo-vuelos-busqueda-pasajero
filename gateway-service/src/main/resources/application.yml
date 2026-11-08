@@ -9,14 +9,17 @@ spring:
       enabled: false
     gateway:
       routes:
-
         - id: auth-service-route
           uri: http://localhost:8081
           predicates:
             - Path=/api/auth/**
 
-
         - id: booking-service-route
           uri: http://localhost:2051
           predicates:
             - Path=/api/v1/reservations/**
+
+        - id: flight-service-route
+          uri: http://localhost:8595
+          predicates:
+            - Path=/api/v1/flights/**

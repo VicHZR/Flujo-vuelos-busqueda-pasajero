@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication(scanBasePackages = "primer.intento.time")
 @EnableJpaRepositories(basePackages = "primer.intento.time.booking.infraestructure.persistence")
 @EntityScan(basePackages = "primer.intento.time.booking.infraestructure.persistence")
-@EnableFeignClients
+@EnableFeignClients(basePackages = "primer.intento.time.booking.infraestructure.out.feign")
 public class BookingApplication {
 
     public static void main(String[] args) {

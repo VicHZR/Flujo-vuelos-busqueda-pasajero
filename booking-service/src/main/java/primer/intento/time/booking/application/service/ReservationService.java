@@ -2,6 +2,7 @@ package primer.intento.time.booking.application.service;
 
 import org.springframework.stereotype.Service;
 import primer.intento.time.booking.application.port.in.ManageReservationUseCase;
+import primer.intento.time.booking.application.port.out.FlightValidationPort;
 import primer.intento.time.booking.application.port.out.ReservationRepositoryPort;
 import primer.intento.time.booking.domain.exception.ResourceNotFoundException;
 import primer.intento.time.booking.domain.model.LodgingReservation;
@@ -12,14 +13,26 @@ import java.util.List;
 public class ReservationService implements ManageReservationUseCase {
 
     private final ReservationRepositoryPort reservationRepositoryPort;
+    private final FlightValidationPort flightValidationPort;
 
-    public ReservationService(ReservationRepositoryPort reservationRepositoryPort) {
+    public ReservationService(ReservationRepositoryPort reservationRepositoryPort,
+                              FlightValidationPort flightValidationPort) {
         this.reservationRepositoryPort = reservationRepositoryPort;
+        this.flightValidationPort = flightValidationPort;
     }
 
     @Override
     public LodgingReservation createReservation(LodgingReservation reservation) {
-        // Aquí llama al método save del puerto (que a su vez usa el adaptador de persistencia)
+        // Validar si la reserva incluye un tiquete de vuelo y si este existe en el flight-service
+        if (reservation.getFlightTicket() != null && reservation.getFlightTicket().getFlightNumber() != null) {
+            String flightNumber = reservation.getFlightTicket().getFlightNumber();
+            boolean flightExists = flightValidationPort.validateFlightExists(flightNumber);
+
+            if (!flightExists) {
+                throw new ResourceNotFoundException("El vuelo con número " + flightNumber + " no existe o no está disponible.");
+            }
+        }
+
         return reservationRepositoryPort.save(reservation);
     }
 
@@ -37,7 +50,6 @@ public class ReservationService implements ManageReservationUseCase {
     @Override
     public LodgingReservation updateReservation(Long id, LodgingReservation reservation) {
         getReservation(id); // Valida que exista
-        // Asume que tu modelo tiene un método para fijar el ID o manejas la actualización
         return reservationRepositoryPort.save(reservation);
     }
 
