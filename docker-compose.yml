@@ -1,18 +1,130 @@
 version: '3.8'
 
 services:
+  # Base de Datos Relacional (MySQL con soporte para múltiples bases de datos)
   mysql:
     image: mysql:8.0
     container_name: time-booking-mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: auth_db
     ports:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      # Script opcional para crear la segunda base de datos al arrancar
       - ./init-multiple-databases.sql:/docker-entrypoint-initdb.d/init-multiple-databases.sql
+    networks:
+      - time-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Base de Datos No Relacional (MongoDB para flight-service)
+  mongodb:
+    image: mongo:7.0
+    container_name: time-booking-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - time-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Servidor de Configuración Centralizada
+  config-server:
+    build: ./config-server
+    container_name: time-config-server
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./config-repo:/config-repo:ro
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+    networks:
+      - time-net
+
+  # Servicio de Autenticación
+  auth-service:
+    build: ./auth-service
+    container_name: time-auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - DB_URL=jdbc:mysql://mysql:3306/auth_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - DB_USER=root
+      - DB_PASSWORD=rootpassword
+      - JWT_SECRET=tu-clave-secreta-super-compartida-y-segura-de-al-menos-32-caracteres
+    depends_on:
+      mysql:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+    networks:
+      - time-net
+
+  # Servicio de Vuelos (MongoDB)
+  flight-service:
+    build: ./flight-service
+    container_name: time-flight-service
+    ports:
+      - "8595:8595"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/time_flight_db
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - time-net
+
+  # Servicio de Reservas (MySQL)
+  booking-service:
+    build: ./booking-service
+    container_name: time-booking-service
+    ports:
+      - "2051:2051"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - CONFIG_SERVER_URL=http://config-server:8888
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/passages_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - JWT_SECRET=tu-clave-secreta-super-compartida-y-segura-de-al-menos-32-caracteres
+    depends_on:
+      mysql:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+      flight-service:
+        condition: service_started
+    networks:
+      - time-net
+
+  # API Gateway (Punto de entrada único)
+  gateway-service:
+    build: ./gateway-service
+    container_name: time-gateway-service
+    ports:
+      - "8594:8594"
+    depends_on:
+      - auth-service
+      - booking-service
+      - flight-service
+    networks:
+      - time-net
 
 volumes:
   mysql_data:
+  mongo_data:
+
+networks:
+  time-net:
+    driver: bridge
