@@ -2,7 +2,6 @@
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /workspace
 
-# Copiamos todo el repositorio raíz para que Maven reconozca el pom.xml padre y los submódulos
 COPY . .
 
 # Recibimos el nombre del servicio dinámicamente desde el docker-compose
@@ -16,7 +15,7 @@ FROM eclipse-temurin:21-jre
 RUN useradd --system --uid 10001 app
 WORKDIR /app
 
-# Copiamos el jar generado del servicio correspondiente
+# El jar generado del servicio correspondiente
 ARG SERVICE_NAME
 COPY --from=build /workspace/${SERVICE_NAME}/target/*.jar app.jar
 USER app
