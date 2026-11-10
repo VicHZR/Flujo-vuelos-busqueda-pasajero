@@ -1,85 +1,54 @@
-# ✈️ Travel & Lodging Reservation API
+# ✈️ Sistema de Microservicios: Flujo de Vuelos, Búsqueda y Pasajeros
 
-Una API RESTful robusta y escalable desarrollada en **Java y Spring Boot**, orientada a la gestión integral de reservas de alojamiento, pasajeros y boletos de vuelo. 
+Plataforma backend distribuida desarrollada en **Java 21** y **Spring Boot 3.3.4**, estructurada bajo un modelo multi-módulo de Maven para garantizar la separación de responsabilidades, alta cohesión y bajo acoplamiento entre los servicios de negocio.
 
-Este proyecto ha sido diseñado bajo los estrictos principios de la **Arquitectura Hexagonal (Puertos y Adaptadores)**, garantizando un bajo acoplamiento, alta cohesión y una clara separación de responsabilidades entre la lógica de negocio central y las dependencias de infraestructura externa (bases de datos, web framework).
+---
 
-## 🚀 Tecnologías Utilizadas
+## 🛠️ Arquitectura del Sistema
 
-*   **Lenguaje:** Java
-*   **Framework:** Spring Boot
-*   **Persistencia:** Spring Data JPA / Hibernate
-*   **Arquitectura:** Hexagonal (Ports and Adapters)
-*   **Formato de datos:** JSON (Jackson)
+El ecosistema se compone de los siguientes módulos independientes que se comunican de forma centralizada:
 
-## 🏗️ Estructura de la Arquitectura Hexagonal
+| Módulo | Puerto | Descripción | Tecnologías Clave |
+| :--- | :---: | :--- | :--- |
+| **`config-server`** | `8888` | Servidor de configuración centralizada (perfil `native`). | Spring Cloud Config Server |
+| **`gateway-service`** | `8594` | API Gateway perimetral y punto único de entrada. | Spring Cloud Gateway |
+| **`auth-service`** | `8081` | Microservicio de autenticación, control de identidad y roles. | Spring Security, JWT |
+| **`flight-service`** | `8595` | Gestión y catálogo de vuelos, rutas y disponibilidad. | MongoDB, Spring Data |
+| **`booking-service`** | `2051` | Lógica central de transacciones y procesamiento de reservas. | MySQL, Spring Data JPA |
 
-El proyecto está dividido en tres capas principales, respetando la regla de dependencia (de afuera hacia adentro):
+---
 
-1.  **Domain (Core):** Contiene los modelos de negocio puros (`LodgingReservation`, `Passenger`, `FlightTicket`). Estas clases son **agnósticas** a cualquier framework o tecnología externa.
-2.  **Application:** Contiene la lógica de orquestación. Define los Casos de Uso (`ManageReservationUseCase`) y los **Puertos**:
-    *   *Inbound Ports:* Interfaces que definen cómo el exterior se comunica con el dominio.
-    *   *Outbound Ports:* Interfaces (`ReservationRepositoryPort`) que definen cómo el dominio se comunica con el exterior.
-3.  **Infrastructure:** Implementa los adaptadores que conectan el exterior con la aplicación.
-    *   *Inbound Adapters (Web):* Controladores REST (`ReservationController`).
-    *   *Outbound Adapters (Persistence):* Implementación de repositorios (`ReservationJpaAdapter`), Entidades de base de datos de Spring Data (`LodgingReservationEntity`, etc.) y sus respectivos mapeadores al dominio.
+## 🚀 Guía de Ejecución Local
 
-## 🛠️ Decisiones de Diseño y Buenas Prácticas
+Este proyecto está configurado para ejecutarse de manera **100% nativa y local** utilizando la terminal integrada de tu IDE (como IntelliJ IDEA) y el ciclo de vida de Maven, sin dependencia de contenedores para la ejecución de los servicios.
 
-*   **Separación Modelos vs Entidades:** Los objetos de dominio y las entidades JPA están estrictamente separados. Se utilizan mapeadores (`toDomain()`) en el adaptador de persistencia para evitar que las anotaciones de base de datos contaminen la lógica de negocio.
-*   **Actualizaciones Parciales (PATCH):** Se implementó un soporte sólido para peticiones `PATCH`, permitiendo actualizar campos específicos (como cambiar solo el tipo de alojamiento) sin sobreescribir ni anular las entidades relacionadas (Pasajeros o Vuelos).
-*   **Prevención de Referencias Cíclicas:** Se manejó la bidireccionalidad entre `FlightTicket` y `Passenger` utilizando la anotación `@JsonIgnore` a nivel de dominio, garantizando respuestas JSON limpias y evitando errores de `StackOverflow` durante la serialización.
+### 1. Prerrequisitos
+* **Java Development Kit (JDK) 21** instalado y configurado en el sistema.
+* **MySQL** y **MongoDB** corriendo de manera local en sus puertos por defecto (`3306` y `27017`).
 
-## 📡 Endpoints de la API
-
-La API expone los siguientes endpoints bajo la ruta base `/api/reservations`:
-
-| Método | Endpoint | Descripción |
-| :--- | :--- | :--- |
-| `POST` | `/api/reservations` | Crea una nueva reserva completa. |
-| `GET` | `/api/reservations` | Retorna el listado de todas las reservas. |
-| `GET` | `/api/reservations/{id}` | Retorna los detalles de una reserva específica. |
-| `PUT` | `/api/reservations/{id}` | Actualiza de forma completa una reserva. |
-| `PATCH` | `/api/reservations/{id}` | Actualiza parcialmente una reserva (ej. solo el alojamiento). |
-| `DELETE` | `/api/reservations/{id}` | Elimina una reserva de la base de datos. |
-
-### 📝 Ejemplo de Payload (Respuesta JSON)
-
-**GET** `/api/reservations/10`
-
-```json
-{
-    "id": 10,
-    "accommodationType": "Airbnb - Valle Sagrado",
-    "passenger": {
-      "id": 10,
-      "firstName": "Eunice Fiorella",
-      "lastName": "Ancajima",
-      "documentType": "DNI",
-      "documentNumber": "12345678",
-      "age": 30
-    },
-    "flightTicket": {
-      "id": 10,
-      "ticketNumber": "TK-8472",
-      "airline": "JetSMART",
-      "seatNumber": "12A",
-      "flightNumber": "JA-402",
-      "flightTime": "2026-10-20T08:00:00"
-    }
-}
+### 2. Compilación del Proyecto
+Posiciónate en la carpeta raíz del proyecto multi-módulo y ejecuta el comando de limpieza y compilación:
+```powershell
+mvn clean compile
 ```
-## ⚙️ Instalación y Ejecución local
-Clona el repositorio:
+```Paso 1: Iniciar el Servidor de Configuración
+mvn -pl config-server spring-boot:run
+```
+```Paso 2: Iniciar el Servicio de Autenticación
+mvn -pl auth-service spring-boot:run
+```
+```Paso 3: Iniciar el Servicio de Vuelos
+mvn -pl flight-service spring-boot:run
+```
+```Paso 4: Iniciar el Servicio de Reservas
+mvn -pl booking-service spring-boot:run
+```
+```Paso 5: Iniciar el API Gateway
+mvn -pl gateway-service spring-boot:run
+```
+```🧪 Pruebas de Endpoints
+Puedes utilizar herramientas como Bruno o Postman para realizar peticiones HTTP apuntando directamente al puerto del API Gateway (http://localhost:8594), el cual se encargará de enrutar las solicitudes de forma transparente hacia los microservicios correspondientes.
 
-git clone [https://github.com/tu-usuario/travel-reservation-api.git](https://github.com/tu-usuario/travel-reservation-api.git)
+👨‍💻 Autor
+Víctor Hugo Guzmán Prieto (@VicHZR)
 
-Navega al directorio del proyecto:
-
-cd travel-reservation-api
-
-Configura tus credenciales de base de datos en el archivo application.properties o application.yml.
-
-Ejecuta la aplicación usando Maven o tu IDE preferido:
-
-./mvnw spring-boot:run
