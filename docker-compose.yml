@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  # Base de Datos Relacional (MySQL con soporte para múltiples bases de datos)
   mysql:
     image: mysql:8.0
     container_name: time-booking-mysql
@@ -20,7 +17,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # Base de Datos No Relacional (MongoDB para flight-service)
   mongodb:
     image: mongo:7.0
     container_name: time-booking-mongo
@@ -36,9 +32,12 @@ services:
       timeout: 5s
       retries: 5
 
-  # Servidor de Configuración Centralizada
   config-server:
-    build: ./config-server
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
+      args:
+        - SERVICE_NAME=config-server
     container_name: time-config-server
     ports:
       - "8888:8888"
@@ -49,9 +48,12 @@ services:
     networks:
       - time-net
 
-  # Servicio de Autenticación
   auth-service:
-    build: ./auth-service
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+      args:
+        - SERVICE_NAME=auth-service
     container_name: time-auth-service
     ports:
       - "8081:8081"
@@ -70,9 +72,12 @@ services:
     networks:
       - time-net
 
-  # Servicio de Vuelos (MongoDB)
   flight-service:
-    build: ./flight-service
+    build:
+      context: .
+      dockerfile: flight-service/Dockerfile
+      args:
+        - SERVICE_NAME=flight-service
     container_name: time-flight-service
     ports:
       - "8595:8595"
@@ -85,9 +90,12 @@ services:
     networks:
       - time-net
 
-  # Servicio de Reservas (MySQL)
   booking-service:
-    build: ./booking-service
+    build:
+      context: .
+      dockerfile: booking-service/Dockerfile
+      args:
+        - SERVICE_NAME=booking-service
     container_name: time-booking-service
     ports:
       - "2051:2051"
@@ -108,9 +116,12 @@ services:
     networks:
       - time-net
 
-  # API Gateway (Punto de entrada único)
   gateway-service:
-    build: ./gateway-service
+    build:
+      context: .
+      dockerfile: gateway-service/Dockerfile
+      args:
+        - SERVICE_NAME=gateway-service
     container_name: time-gateway-service
     ports:
       - "8594:8594"
